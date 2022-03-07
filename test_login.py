@@ -278,9 +278,7 @@ class LoginTestCase(unittest.TestCase):
 
         @self.app.route('/username')
         def username():
-            if current_user.is_authenticated:
-                return current_user.name
-            return 'Anonymous'
+            return current_user.name if current_user.is_authenticated else 'Anonymous'
 
         @self.app.route('/is-fresh')
         def is_fresh():
@@ -527,9 +525,6 @@ class LoginTestCase(unittest.TestCase):
 
         @self.app.route('/login')
         def login():
-            if(current_user.is_authenticated):
-                # Or anything that touches current_user
-                pass
             return session.pop('next', '')
 
         with self.app.test_client() as c:
@@ -1526,7 +1521,7 @@ class CookieEncodingTestCase(unittest.TestCase):
         h1 = '0e9e6e9855fbe6df7906ec4737578a1d491b38d3fd5246c1561016e189d6516'
         h2 = '043286501ca43257c938e60aad77acec5ce916b94ca9d00c0bb6f9883ae4b82'
         h3 = 'ae'
-        COOKIE = '1|' + h1 + h2 + h3
+        COOKIE = f'1|{h1}{h2}{h3}'
 
         with app.test_request_context():
             self.assertEqual(COOKIE, encode_cookie('1'))
@@ -1545,7 +1540,7 @@ class CookieEncodingTestCase(unittest.TestCase):
         h1 = '0e9e6e9855fbe6df7906ec4737578a1d491b38d3fd5246c1561016e189d6516'
         h2 = '043286501ca43257c938e60aad77acec5ce916b94ca9d00c0bb6f9883ae4b82'
         h3 = 'ae'
-        COOKIE = '1|' + h1 + h2 + h3
+        COOKIE = f'1|{h1}{h2}{h3}'
 
         with app.test_request_context():
             self.assertEqual(COOKIE, encode_cookie('1', key=key))
@@ -1646,15 +1641,11 @@ class UnicodeCookieUserIDTestCase(unittest.TestCase):
 
         @self.app.route('/username')
         def username():
-            if current_user.is_authenticated:
-                return current_user.name
-            return 'Anonymous'
+            return current_user.name if current_user.is_authenticated else 'Anonymous'
 
         @self.app.route('/userid')
         def user_id():
-            if current_user.is_authenticated:
-                return current_user.id
-            return 'wrong_id'
+            return current_user.id if current_user.is_authenticated else 'wrong_id'
 
         @self.login_manager.user_loader
         def load_user(user_id):
@@ -1814,9 +1805,7 @@ class CustomTestClientTestCase(unittest.TestCase):
 
         @self.app.route('/username')
         def username():
-            if current_user.is_authenticated:
-                return current_user.name
-            return 'Anonymous'
+            return current_user.name if current_user.is_authenticated else 'Anonymous'
 
         @self.app.route('/is-fresh')
         def is_fresh():
